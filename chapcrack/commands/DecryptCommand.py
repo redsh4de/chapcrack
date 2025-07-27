@@ -43,6 +43,10 @@ class DecryptCommand(Command):
                 writer.writepkt(decryptedPacket)
                 count += 1
 
+        if count == 0:
+            print("Error: No packets were decrypted. The NT hash or password may be incorrect.")
+            sys.exit(1)
+
         print("Wrote %d packets." % count)
 
     def _getNtHash(self):
