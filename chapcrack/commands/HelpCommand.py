@@ -46,7 +46,7 @@ class HelpCommand:
     Commands (use "chapcrack.py help <command>" to see more):
       parse    -i <capture>
       radius   -C <challenge> -R <response>
-      decrypt  -i <capture> -o <decrypted_capture> -n <nthash>
+      decrypt  -i <capture> -o <decrypted_capture> (-n <nthash> / -p <password>)
       help     <command>
             """)
 
