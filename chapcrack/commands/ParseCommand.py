@@ -64,6 +64,7 @@ class ParseCommand(Command):
         print("                      P = %s" % plaintext.hex())
 
         if k3 is not None:
+            print("                     K3 = %s" % k3.hex())
             print("                   Crack.sh Submission = $99$%s" % base64.b64encode(plaintext + c1 + c2 + k3[0:2]).decode())
             
     def _getK3(self, plaintext, ciphertext):
