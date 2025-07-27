@@ -73,7 +73,7 @@ class ChapStateManager:
         k2 = des.expand_des_key(k2)
 
         k3  = nthash[14:16]
-        k3 += (chr(0x00) * 5)
+        k3 += b'\x00' * 5
         k3  = des.expand_des_key(k3)
 
         return k1, k2, k3

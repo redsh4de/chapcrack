@@ -29,8 +29,8 @@ class MppePacket:
         return ord(header) & 0x10 != 0
 
     def getCounter(self):
-        highBits = ord(self.ppp_data[0]) & 0x0F
-        lowBits  = ord(self.ppp_data[1]) & 0xFF
+        highBits = self.ppp_data[0] & 0x0F
+        lowBits  = self.ppp_data[1] & 0xFF
 
         return highBits << 7 | lowBits
 

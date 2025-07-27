@@ -30,26 +30,26 @@ class ChapPacket:
             return self.dst
 
     def getIdentifier(self):
-        return ord(self.data[1])
+        return self.data[1]
 
     def isChallenge(self):
-        return ord(self.data[0]) == 1
+        return self.data[0] == 1
 
     def isResponse(self):
-        return ord(self.data[0]) == 2
+        return self.data[0] == 2
 
     def isSuccess(self):
-        return ord(self.data[0]) == 3
+        return self.data[0] == 3
 
     def getName(self):
         payload         = self._getPayload()
-        challengeLength = ord(payload[0])
+        challengeLength = payload[0]
 
         return payload[1+challengeLength:]
 
     def getChallenge(self):
         payload         = self._getPayload()
-        challengeLength = ord(payload[0])
+        challengeLength = payload[0]
 
         return payload[1:challengeLength+1]
 
@@ -65,7 +65,7 @@ class ChapPacket:
         return self.data[4:self._getPayloadLength()]
 
     def _getPayloadLength(self):
-        high = ord(self.data[2])
-        low  = ord(self.data[3])
+        high = self.data[2]
+        low  = self.data[3]
 
         return (high << 8) | low

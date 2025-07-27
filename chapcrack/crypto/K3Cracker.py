@@ -16,7 +16,7 @@ __license__   = "GPLv3"
 __copyright__ = "Copyright 2012, Moxie Marlinspike"
 
 def checkKey(plaintext, ciphertext, b1, b2):
-    keyCandidateBytes = chr(b1) + chr(b2) + (chr(0x00) * 5)
+    keyCandidateBytes = bytes([b1, b2, 0x00, 0x00, 0x00, 0x00, 0x00])
     keyCandidate      = des.expand_des_key(keyCandidateBytes)
     result            = des.des_encrypt_block(keyCandidate, plaintext)
 

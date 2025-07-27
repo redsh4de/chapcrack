@@ -14,19 +14,19 @@ class CcpPacket:
         self.destinationIp = destinationIp
 
     def isConfigurationRequest(self):
-        return ord(self.data[0]) == 1
+        return self.data[0] == 1
 
     def isConfigurationAck(self):
-        return ord(self.data[0]) == 2
+        return self.data[0] == 2
 
     def isConfigurationNack(self):
-        return ord(self.data[0]) == 3
+        return self.data[0] == 3
 
     def isStateless(self):
-        return ord(self.data[6]) & 0x01 > 0
+        return self.data[6] & 0x01 > 0
 
     def is128bit(self):
-        return ord(self.data[9]) == 0x40
+        return self.data[9] == 0x40
 
     def getSourceAddress(self):
         return self.sourceIp

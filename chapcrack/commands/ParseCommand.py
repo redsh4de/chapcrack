@@ -26,7 +26,7 @@ class ParseCommand(Command):
     def execute(self):
         inputFile  = self._getInputFile()
         handshakes = MultiChapStateManager()
-        capture    = open(inputFile)
+        capture    = open(inputFile, "rb")
         reader     = ChapPacketReader(capture)
 
         for packet in reader:
@@ -36,33 +36,41 @@ class ParseCommand(Command):
 
         for server in complete:
             for client in complete[server]:
-                print "Got completed handshake [%s --> %s]" % (client, server)
+                handshake = complete[server][client]
+                print("Got completed handshake [%s --> %s]" % (client, server))
 
-                c1, c2, c3 = complete[server][client].getCiphertext()
-                plaintext  = complete[server][client].getPlaintext()
-                username   = complete[server][client].getUserName()
+                c1, c2, c3 = handshake.getCiphertext()
+                plaintext = handshake.getPlaintext()
+                username = handshake.getUserName()
                 k3         = self._getK3(plaintext, c3)
 
+                authenticator_challenge = handshake.handshake['challenge'].getChallenge()
+                nt_response = handshake.getNtResponse()
+                peer_challenge = handshake.handshake['response'].getPeerChallenge()
+
+                user = username.decode() if isinstance(username, bytes) else username
+
+
                 self._printParameters(username, plaintext, c1, c2, c3, k3)
+                print(f"                   John The Ripper = {user}:::{authenticator_challenge.hex()}:{nt_response.hex()}:{peer_challenge.hex()}")
 
     def _printParameters(self, username, plaintext, c1, c2, c3, k3):
         if username is not None:
-            print "                   User = %s" % username
+            print("                   User = %s" % username)
 
-        print "                     C1 = %s" % c1.encode("hex")
-        print "                     C2 = %s" % c2.encode("hex")
-        print "                     C3 = %s" % c3.encode("hex")
-        print "                      P = %s" % plaintext.encode("hex")
+        print("                     C1 = %s" % c1.hex())
+        print("                     C2 = %s" % c2.hex())
+        print("                     C3 = %s" % c3.hex())
+        print("                      P = %s" % plaintext.hex())
 
         if k3 is not None:
-            print "                     K3 = %s" % k3.encode("hex")
-            print "CloudCracker Submission = $99$%s" % base64.b64encode("%s%s%s%s" % (plaintext, c1, c2, k3[0:2]))
-
+            print("                   Crack.sh Submission = $99$%s" % base64.b64encode(plaintext + c1 + c2 + k3[0:2]).decode())
+            
     def _getK3(self, plaintext, ciphertext):
         if not self._containsOption("-n"):
             sys.stdout.write("Cracking K3...")
             k3 = K3Cracker().crack(plaintext, ciphertext, True)
-            print ""
+            print()
 
             return k3
 
@@ -71,7 +79,7 @@ class ParseCommand(Command):
     @staticmethod
     def printHelp():
         print(
-            """Parses a PPTP capture and prints the ciphertext/plaintext pairs for decrypting.
+            """Parses a PPTP capture and prints the ciphertext/plaintext pairs and John The Ripper hash for decrypting.
 
               parse
 

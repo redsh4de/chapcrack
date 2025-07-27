@@ -60,14 +60,14 @@ class MppeStateManager:
             stateSetter(sessionKey, packet.getCounter())
             return self._decryptPacket(packet, sessionKey)
         else:
-            print "Old packet: %s" % packet.getCounter()
+            print("Old packet: %s" % packet.getCounter())
             return None
 
     def _decryptPacket(self, packet, sessionKey):
         cipher    = RC4(key=sessionKey)
         plaintext = cipher.update(packet.getData())
 
-        if ord(plaintext[0]) == 0x00 and ord(plaintext[1]) == 0x21:
+        if plaintext[0] == 0x00 and plaintext[1] == 0x21:
             ethPacket = packet.getEthernetFrame()
             ethPacket = copy.deepcopy(ethPacket)
             ipPacket  = IP()
